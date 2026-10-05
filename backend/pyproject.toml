@@ -20,6 +20,8 @@ dependencies = [
     "python-multipart",
     "email-validator",
     "celery",
+    "cryptography",
+    "httpx",
 ]
 
 [project.optional-dependencies]
