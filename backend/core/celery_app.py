@@ -5,7 +5,7 @@ celery_app = Celery(
     "fitness_worker",
     broker=settings.REDIS_URL,
     backend=settings.REDIS_URL,
-    include=["tasks.test_tasks", "tasks.workout_tasks"]
+    include=["tasks.test_tasks", "tasks.workout_tasks", "tasks.huawei_tasks"]
 )
 
 celery_app.conf.update(
@@ -22,5 +22,9 @@ celery_app.conf.beat_schedule = {
     "heartbeat-every-10-minutes": {
         "task": "tasks.heartbeat",
         "schedule": crontab(minute="*/10"),
+    },
+    "poll-huawei-every-4-hours": {
+        "task": "tasks.huawei_tasks.poll_huawei_health",
+        "schedule": crontab(minute=0, hour="*/4"),
     }
 }
