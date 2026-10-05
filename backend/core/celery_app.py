@@ -15,3 +15,12 @@ celery_app.conf.update(
     timezone="UTC",
     enable_utc=True,
 )
+
+from celery.schedules import crontab
+
+celery_app.conf.beat_schedule = {
+    "heartbeat-every-10-minutes": {
+        "task": "tasks.heartbeat",
+        "schedule": crontab(minute="*/10"),
+    }
+}
