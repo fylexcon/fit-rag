@@ -19,6 +19,7 @@ dependencies = [
     "openai",
     "python-multipart",
     "email-validator",
+    "celery",
 ]
 
 [project.optional-dependencies]

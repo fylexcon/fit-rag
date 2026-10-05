@@ -11,6 +11,7 @@ pwdlib[bcrypt]
 openai
 python-multipart
 email-validator
+celery
 
 [dev]
 pytest

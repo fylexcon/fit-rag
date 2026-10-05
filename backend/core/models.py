@@ -21,6 +21,7 @@ class Activity(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    mongo_ref_id = Column(String, nullable=True)
     source = Column(String, nullable=False)
     activity_type = Column(String, nullable=False)
     duration_minutes = Column(Float, nullable=False)
