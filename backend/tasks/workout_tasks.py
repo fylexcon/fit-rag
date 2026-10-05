@@ -65,9 +65,10 @@ async def async_process_workout(raw_doc_id: str, user_id: str):
     if not start_time:
         start_time = datetime.now(timezone.utc)
 
+    import uuid
     async with AsyncSessionLocal() as db:
         activity = Activity(
-            user_id=user_id,
+            user_id=uuid.UUID(user_id),
             mongo_ref_id=raw_doc_id,
             source=raw_doc["source"],
             activity_type=data.get("activity_type", "unknown"),
