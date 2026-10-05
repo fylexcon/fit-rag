@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     
     JWT_SECRET: str = "supersecretkey"
     JWT_ALGORITHM: str = "HS256"
-    OPENAI_API_KEY: str = ""
+    OPENAI_API_KEY: str = "dummy"
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
