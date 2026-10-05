@@ -1,0 +1,42 @@
+
+[project]
+name = "fitness-ai-backend"
+version = "0.1.0"
+description = "Fitness AI Agent Backend"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic-settings",
+    "sqlalchemy[asyncio]",
+    "asyncpg",
+    "alembic",
+    "motor",
+    "redis",
+    "pyjwt",
+    "pwdlib[bcrypt]",
+    "openai",
+    "python-multipart",
+    "email-validator",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "httpx",
+    "ruff",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.setuptools]
+packages = ["core"]
+py-modules = ["main"]

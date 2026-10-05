@@ -1,0 +1,23 @@
+Metadata-Version: 2.4
+Name: fitness-ai-backend
+Version: 0.1.0
+Summary: Fitness AI Agent Backend
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi
+Requires-Dist: uvicorn
+Requires-Dist: pydantic-settings
+Requires-Dist: sqlalchemy[asyncio]
+Requires-Dist: asyncpg
+Requires-Dist: alembic
+Requires-Dist: motor
+Requires-Dist: redis
+Requires-Dist: pyjwt
+Requires-Dist: pwdlib[bcrypt]
+Requires-Dist: openai
+Requires-Dist: python-multipart
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-asyncio; extra == "dev"
+Requires-Dist: httpx; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
