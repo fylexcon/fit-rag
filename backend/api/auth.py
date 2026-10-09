@@ -41,3 +41,59 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
+
+from fastapi.responses import RedirectResponse
+import urllib.parse
+from core.auth import get_current_user
+from core.config import settings
+from core.huawei import exchange_code_for_token
+from core.crypto import encrypt_token
+from datetime import datetime
+
+@router.get("/huawei/connect")
+async def connect_huawei(current_user: User = Depends(get_current_user)):
+    """Redirects to Huawei auth URL with state."""
+    base_url = "https://oauth-login.cloud.huawei.com/oauth2/v3/authorize"
+    params = {
+        "response_type": "code",
+        "client_id": settings.HUAWEI_CLIENT_ID,
+        "redirect_uri": "http://localhost:8000/auth/huawei/callback",
+        "scope": "https://www.huawei.com/healthkit/sleep.read https://www.huawei.com/healthkit/heartrate.read",
+        "state": str(current_user.id),
+        "access_type": "offline",
+    }
+    url = f"{base_url}?{urllib.parse.urlencode(params)}"
+    return RedirectResponse(url)
+
+@router.get("/huawei/callback")
+async def huawei_callback(code: str, state: str, db: AsyncSession = Depends(get_db)):
+    """Handles the Huawei callback, gets token, encrypts and stores."""
+    # state contains the user_id
+    result = await db.execute(select(User).where(User.id == state))
+    user = result.scalars().first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    try:
+        token_data = await exchange_code_for_token(code)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Failed to exchange code")
+
+    access_token = token_data.get("access_token")
+    refresh_token = token_data.get("refresh_token")
+    expires_in = token_data.get("expires_in", 3600)
+
+    if not access_token or not refresh_token:
+        raise HTTPException(status_code=400, detail="Invalid token response")
+
+    user.huawei_auth = {
+        "access_token": encrypt_token(access_token),
+        "refresh_token": encrypt_token(refresh_token),
+        "expires_at": datetime.utcnow().timestamp() + expires_in
+    }
+    
+    db.add(user)
+    await db.commit()
+
+    return {"message": "Huawei Health connected successfully"}
+
