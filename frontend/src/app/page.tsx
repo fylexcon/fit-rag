@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityFeed } from "@/components/ActivityFeed";
 import { AppHeader } from "@/components/AppHeader";
+import { HealthSummaryCard } from "@/components/HealthSummaryCard";
 import { HuaweiConnectCard } from "@/components/HuaweiConnectCard";
 import { LogWorkoutModal } from "@/components/LogWorkoutModal";
 import { RequireAuth } from "@/components/RequireAuth";
@@ -70,6 +71,7 @@ function Dashboard() {
             />
           </div>
           <aside className="space-y-6">
+            <HealthSummaryCard />
             <HuaweiConnectCard />
           </aside>
         </div>

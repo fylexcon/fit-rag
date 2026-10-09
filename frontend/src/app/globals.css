@@ -39,3 +39,22 @@ body {
     @apply rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900;
   }
 }
+
+/* Chart tokens (validated: dataviz reference palette, slots 1-2) */
+:root {
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --chart-grid: #e4e4e7;
+  --chart-axis: #71717a;
+  --chart-surface: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --chart-grid: #27272a;
+    --chart-axis: #a1a1aa;
+    --chart-surface: #18181b;
+  }
+}
