@@ -10,6 +10,7 @@ pyjwt
 pwdlib[bcrypt]
 openai
 python-multipart
+email-validator
 
 [dev]
 pytest

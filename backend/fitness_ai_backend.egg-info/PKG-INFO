@@ -16,6 +16,7 @@ Requires-Dist: pyjwt
 Requires-Dist: pwdlib[bcrypt]
 Requires-Dist: openai
 Requires-Dist: python-multipart
+Requires-Dist: email-validator
 Provides-Extra: dev
 Requires-Dist: pytest; extra == "dev"
 Requires-Dist: pytest-asyncio; extra == "dev"
