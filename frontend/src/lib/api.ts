@@ -125,7 +125,11 @@ export const api = {
     return apiFetch<ActivityDetail>(`/activities/${encodeURIComponent(id)}`);
   },
   getHealthSummary(days = 7) {
-    return apiFetch<HealthSummary>(`/health-summary?days=${days}`);
+    // Bucket days in the viewer's timezone so overnight sleep lands on the local date.
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+    return apiFetch<HealthSummary>(
+      `/health-summary?days=${days}&tz=${encodeURIComponent(tz)}`,
+    );
   },
   logWorkout(input: { text?: string; file?: File }) {
     const form = new FormData();

@@ -1,4 +1,5 @@
 import uuid
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db
@@ -40,7 +41,12 @@ async def get_activity(
 @router.get("/health-summary", response_model=HealthSummaryResponse)
 async def health_summary(
     days: int = Query(7, ge=1, le=90),
+    tz: str = Query("UTC", max_length=64, description="IANA timezone used to bucket days"),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return await activity_service.get_health_summary(db, current_user.id, days=days)
+    try:
+        ZoneInfo(tz)
+    except (ZoneInfoNotFoundError, ValueError):
+        raise HTTPException(status_code=422, detail=f"Unknown timezone: {tz}")
+    return await activity_service.get_health_summary(db, current_user.id, days=days, tz=tz)

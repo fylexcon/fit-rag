@@ -1,7 +1,8 @@
 import json
 import uuid
-from datetime import datetime, time, timedelta, timezone
+from datetime import datetime, time, timedelta
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from bson.errors import InvalidId
 from sqlalchemy import Date, case, cast, func
@@ -59,15 +60,20 @@ async def get_activity_detail(
 
 
 async def get_health_summary(
-    db: AsyncSession, user_id: uuid.UUID, days: int = 7
+    db: AsyncSession, user_id: uuid.UUID, days: int = 7, tz: str = "UTC"
 ) -> dict:
-    """Aggregates daily sleep, steps and resting heart rate over the last `days` UTC days."""
-    end_date = datetime.now(timezone.utc).date()
-    start_date = end_date - timedelta(days=days - 1)
-    window_start = datetime.combine(start_date, time.min, tzinfo=timezone.utc)
-    window_end = datetime.combine(end_date + timedelta(days=1), time.min, tzinfo=timezone.utc)
+    """Aggregates daily sleep, steps and resting heart rate over the last `days` days.
 
-    day = cast(func.timezone("UTC", Activity.start_time), Date).label("day")
+    Days are calendar days in the IANA timezone `tz`, so a night's sleep lands on
+    the date the user sees locally rather than its UTC date.
+    """
+    zone = ZoneInfo(tz)
+    end_date = datetime.now(zone).date()
+    start_date = end_date - timedelta(days=days - 1)
+    window_start = datetime.combine(start_date, time.min, tzinfo=zone)
+    window_end = datetime.combine(end_date + timedelta(days=1), time.min, tzinfo=zone)
+
+    day = cast(func.timezone(tz, Activity.start_time), Date).label("day")
     is_sleep = func.lower(Activity.activity_type) == SLEEP_ACTIVITY_TYPE
     result = await db.execute(
         select(

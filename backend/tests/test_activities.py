@@ -218,3 +218,31 @@ async def test_health_summary_empty_and_validation(client):
 
     assert (await client.get("/health-summary?days=0", headers=headers)).status_code == 422
     assert (await client.get("/health-summary?days=91", headers=headers)).status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_health_summary_buckets_days_in_requested_timezone(client):
+    user_id, headers = await _register_and_login(client)
+    # 22:30 UTC yesterday is 01:30 today in Istanbul (UTC+3, no DST).
+    utc_today = datetime.now(timezone.utc).date()
+    sleep_start = datetime.combine(utc_today - timedelta(days=1), time(22, 30), tzinfo=timezone.utc)
+    await _add_activities(
+        _activity(user_id, sleep_start, activity_type="Sleep", duration_minutes=420)
+    )
+
+    local = (await client.get("/health-summary?tz=Europe/Istanbul", headers=headers)).json()
+    local_by_date = {d["date"]: d["sleep_hours"] for d in local["daily"]}
+    assert local_by_date[utc_today.isoformat()] == 7.0
+    assert local_by_date[(utc_today - timedelta(days=1)).isoformat()] is None
+
+    utc = (await client.get("/health-summary", headers=headers)).json()
+    utc_by_date = {d["date"]: d["sleep_hours"] for d in utc["daily"]}
+    assert utc_by_date[(utc_today - timedelta(days=1)).isoformat()] == 7.0
+
+
+@pytest.mark.asyncio
+async def test_health_summary_rejects_unknown_timezone(client):
+    _, headers = await _register_and_login(client)
+    response = await client.get("/health-summary?tz=Mars/Olympus_Mons", headers=headers)
+    assert response.status_code == 422
+    assert (await client.get("/health-summary?tz=../etc/passwd", headers=headers)).status_code == 422

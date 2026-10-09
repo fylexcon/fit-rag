@@ -22,6 +22,7 @@ dependencies = [
     "celery",
     "cryptography",
     "httpx",
+    "tzdata",
 ]
 
 [project.optional-dependencies]
