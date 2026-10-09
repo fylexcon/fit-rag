@@ -2,6 +2,7 @@ main.py
 pyproject.toml
 core/__init__.py
 core/auth.py
+core/celery_app.py
 core/config.py
 core/database.py
 core/models.py
@@ -11,5 +12,6 @@ fitness_ai_backend.egg-info/SOURCES.txt
 fitness_ai_backend.egg-info/dependency_links.txt
 fitness_ai_backend.egg-info/requires.txt
 fitness_ai_backend.egg-info/top_level.txt
+tests/test_auth.py
 tests/test_health.py
 tests/test_workouts.py
