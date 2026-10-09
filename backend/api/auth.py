@@ -50,20 +50,27 @@ from core.huawei import exchange_code_for_token
 from core.crypto import encrypt_token
 from datetime import datetime
 
-@router.get("/huawei/connect")
-async def connect_huawei(current_user: User = Depends(get_current_user)):
-    """Redirects to Huawei auth URL with state."""
+def build_huawei_authorize_url(user: User) -> str:
     base_url = "https://oauth-login.cloud.huawei.com/oauth2/v3/authorize"
     params = {
         "response_type": "code",
         "client_id": settings.HUAWEI_CLIENT_ID,
         "redirect_uri": "http://localhost:8000/auth/huawei/callback",
         "scope": "https://www.huawei.com/healthkit/sleep.read https://www.huawei.com/healthkit/heartrate.read",
-        "state": str(current_user.id),
+        "state": str(user.id),
         "access_type": "offline",
     }
-    url = f"{base_url}?{urllib.parse.urlencode(params)}"
-    return RedirectResponse(url)
+    return f"{base_url}?{urllib.parse.urlencode(params)}"
+
+@router.get("/huawei/connect")
+async def connect_huawei(current_user: User = Depends(get_current_user)):
+    """Redirects to Huawei auth URL with state."""
+    return RedirectResponse(build_huawei_authorize_url(current_user))
+
+@router.get("/huawei/authorize-url")
+async def huawei_authorize_url(current_user: User = Depends(get_current_user)):
+    """Returns the Huawei auth URL for SPA clients, which can't attach a Bearer token to a navigation."""
+    return {"url": build_huawei_authorize_url(current_user)}
 
 @router.get("/huawei/callback")
 async def huawei_callback(code: str, state: str, db: AsyncSession = Depends(get_db)):

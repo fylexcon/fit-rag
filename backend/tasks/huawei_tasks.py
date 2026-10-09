@@ -50,6 +50,8 @@ async def async_poll_huawei_health():
                             duration_minutes = record.get("duration", 0) / 60.0
                             distance_km = record.get("distance", 0) / 1000.0 if "distance" in record else None
                             avg_heart_rate = record.get("avgHeartRate")
+                            steps = record.get("steps")
+                            resting_heart_rate = record.get("restingHeartRate")
                             
                             # We expect 'startTime' in ms or similar from Huawei, but for simplicity:
                             start_time_val = record.get("startTime", current_time * 1000)
@@ -63,6 +65,8 @@ async def async_poll_huawei_health():
                                 duration_minutes=float(duration_minutes),
                                 distance_km=float(distance_km) if distance_km is not None else None,
                                 avg_heart_rate=int(avg_heart_rate) if avg_heart_rate is not None else None,
+                                steps=int(steps) if steps is not None else None,
+                                resting_heart_rate=int(resting_heart_rate) if resting_heart_rate is not None else None,
                                 start_time=start_time
                             )
                             db.add(activity)

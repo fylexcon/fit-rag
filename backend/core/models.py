@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import Column, String, Float, Integer, DateTime, ForeignKey, Text
+from sqlalchemy import Column, String, Float, Integer, DateTime, ForeignKey, Text, Index
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship
 from core.database import Base
@@ -27,7 +27,13 @@ class Activity(Base):
     duration_minutes = Column(Float, nullable=False)
     distance_km = Column(Float, nullable=True)
     avg_heart_rate = Column(Integer, nullable=True)
+    steps = Column(Integer, nullable=True)
+    resting_heart_rate = Column(Integer, nullable=True)
     notes = Column(Text, nullable=True)
     start_time = Column(DateTime(timezone=True), nullable=False)
 
     user = relationship("User", back_populates="activities")
+
+    __table_args__ = (
+        Index("ix_activities_user_id_start_time", "user_id", "start_time"),
+    )
