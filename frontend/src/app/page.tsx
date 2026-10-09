@@ -70,7 +70,7 @@ function Dashboard() {
               onLoadMore={() => setLimit((l) => l + PAGE_SIZE)}
             />
           </div>
-          <aside className="space-y-6">
+          <aside className="order-first space-y-6 lg:order-none">
             <HealthSummaryCard />
             <HuaweiConnectCard />
           </aside>

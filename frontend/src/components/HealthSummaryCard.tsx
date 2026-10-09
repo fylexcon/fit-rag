@@ -55,7 +55,7 @@ export function HealthSummaryCard() {
       <dl className="grid grid-cols-3 gap-3">
         <StatTile label="Avg sleep" value={data?.avg_sleep_hours != null ? `${data.avg_sleep_hours.toFixed(1)} h` : "—"} loading={loading && !data} />
         <StatTile label="Resting HR" value={data?.avg_resting_heart_rate != null ? `${Math.round(data.avg_resting_heart_rate)} bpm` : "—"} loading={loading && !data} />
-        <StatTile label="Steps" value={data?.total_steps != null ? data.total_steps.toLocaleString() : "—"} loading={loading && !data} />
+        <StatTile label="Total steps" value={data?.total_steps != null ? data.total_steps.toLocaleString() : "—"} loading={loading && !data} />
       </dl>
 
       {data && (

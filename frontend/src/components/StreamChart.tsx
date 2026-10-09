@@ -60,6 +60,7 @@ export function StreamChart({ title, unit, points, dataKey, color, valueFormatte
               dot={false}
               activeDot={{ r: 5, stroke: "var(--chart-surface)", strokeWidth: 2 }}
               connectNulls
+              isAnimationActive={false}
             />
           </LineChart>
         </ResponsiveContainer>

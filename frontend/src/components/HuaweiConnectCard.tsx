@@ -27,14 +27,14 @@ export function HuaweiConnectCard() {
       <p className="mt-1 text-sm text-zinc-500">
         Sync sleep, heart rate and workouts automatically every few hours.
       </p>
-      <div className="mt-4 flex items-center justify-between gap-4 rounded-lg border border-zinc-200 p-3 dark:border-zinc-800">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-zinc-200 p-3 dark:border-zinc-800">
         <div className="flex items-center gap-3">
           <span className="flex h-9 w-9 items-center justify-center rounded-md bg-red-600 text-xs font-bold text-white">
             HW
           </span>
           <span className="text-sm font-medium">Huawei Health</span>
         </div>
-        <button type="button" onClick={connect} disabled={connecting} className="btn-secondary">
+        <button type="button" onClick={connect} disabled={connecting} className="btn-secondary whitespace-nowrap">
           {connecting ? "Redirecting…" : "Connect Huawei Health"}
         </button>
       </div>
