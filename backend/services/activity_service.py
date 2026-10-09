@@ -151,18 +151,22 @@ def _extract_streams(payload: dict) -> list[dict]:
     samples = next(
         (payload[k] for k in STREAM_KEYS if isinstance(payload.get(k), list)), []
     )
+    samples = [s for s in samples if isinstance(s, dict)]
+    timestamps = [
+        s.get("timestamp", s.get("startTime"))
+        for s in samples
+        if s.get("timestamp", s.get("startTime")) is not None
+    ]
+    first_ts = min(timestamps) if timestamps else None
+
     points = []
-    first_ts = None
     for sample in samples:
-        if not isinstance(sample, dict):
-            continue
         if "offsetSec" in sample:
             elapsed = float(sample["offsetSec"])
         else:
             ts = sample.get("timestamp", sample.get("startTime"))
             if ts is None:
                 continue
-            first_ts = ts if first_ts is None else first_ts
             elapsed = (ts - first_ts) / 1000.0
 
         pace = sample.get("pace")
